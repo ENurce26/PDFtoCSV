@@ -26,24 +26,15 @@ def process_pdf_file(pdf_path):
     general_names = [match.group(1) for match in re.finditer(general_name_regex, text)]
     full_name = general_names[0] if general_names else None
 
-    # Extract the source name from the file_path without the '.pdf' extension
-    source_name = os.path.basename(pdf_path).replace('.pdf', '')
-
     # Prepare data for CSV
     data = {
         "Name": full_name,
         "DOB": date_of_birth,
         "Phone Numbers": unique_phone_numbers,
-        "Source Name": source_name
+        "Source Name": os.path.basename(pdf_path).replace('.pdf', '')
     }
 
-    # Create a CSV file name based on the PDF file name
-    csv_file_path = os.path.splitext(pdf_path)[0] + '_extracted.csv'
-    with open(csv_file_path, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(["Name", "DOB", "Phone Number", "Source Name"])
-        for number in data["Phone Numbers"]:
-            writer.writerow([data["Name"], data["DOB"], number, data["Source Name"]])
-    
-    # Return the path to the created CSV file
-    return csv_file_path
+    print(f"Processing {pdf_path}")
+    print("Extracted Data:", data)
+
+    return data
